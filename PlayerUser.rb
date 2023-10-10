@@ -11,22 +11,23 @@ class PlayerUser
 
     def handler_colors
         state_validation = handler_validations
+        # si no pasa la validacion del input se encicla hasta que el usuario inserte correctamente
         unless state_validation
         counter= 0
             while counter<1
-
                 list_colors= initial_colors
                 joined_list=list_colors.join(", ")
                 puts "Escribiste incorrectamente las opciones, recuerda que solo tienes disponibles los siguientes colores!".colorize(:red)
                 puts "#{joined_list}".colorize(:red)
-
                 state_validation = handler_validations
                 if state_validation
                     counter=1
                     puts "Opciones validas! Hurra!".colorize(:green)
+                    true
+                    
                 end
             end
-        else puts "JJJJJJ"    
+        else true    
        end
     end
 
@@ -41,6 +42,9 @@ class PlayerUser
         color2 = gets.chomp.downcase.delete(" ")
         color3 = gets.chomp.downcase.delete(" ")
         color4 = gets.chomp.downcase.delete(" ")
+        array = Array.new
+        array.push(color1,color2,color3, color4)
+        validate_color_position(array)
         validation1= validate_user_input(color1,color2,color3,color4)
         validation1
     end
@@ -48,13 +52,20 @@ class PlayerUser
     def validate_user_input(c1,c2,c3,c4)
         # inicializo la lista de colores elegida aleatoriamente
         list_colors_selected = select_random_list
-        puts list_colors_selected
+        puts "#Lista de colores elegidos: #{list_colors_selected}"
         # en caso de insertar un valor vacio o escribir mal el color o insertar un caracter random no pasaria la validacion
         if ((c1 != "") && (c2!= "") && (c3 != "") && (c4 != "")) && ((list_colors_selected.include?(c1)) && (list_colors_selected.include?(c2)) && (list_colors_selected.include?(c3)) && (list_colors_selected.include?(c4)))
             true             
         else false    
         end
-       
+        
+    end
+    
+    # metodo el cual tomo en un array los input del usuario para comenzar a validar la posicion de los colores
+    def validate_color_position(array)
+     
+        
+        
     end
 
     def select_random_list
