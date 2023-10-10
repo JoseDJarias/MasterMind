@@ -1,12 +1,14 @@
 require 'colorize'
+require_relative 'PlayerUser'
 require_relative 'GameBoard'
 
 # Clase principal para el juego MasterMind
 
 class MasterMind
 
+    attr_accessor :PlayerUser
         def initialize
-          
+            @PlayerUser= PlayerUser.new
         end
 
         def starting_messages      
@@ -66,13 +68,22 @@ class MasterMind
         selected
     end
 
+    def assign_option_mood
+        option= option_selected
+        if option === 1
+        
+        else @PlayerUser.start_user_game(true)
+        end
+        
+    end
+
 
     
 
 
     def game
         starting_messages
-        option_selected
+        assign_option_mood
     end
 
     
