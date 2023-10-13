@@ -1,79 +1,102 @@
 # In this class, I'm gonna display the logic to make the game for the person
+require_relative 'Characters'
 class PlayerUser 
 
-    def initial_colors
-        list_colors = ["verde","amarillo","rojo","azul"]
+    attr_accessor :characters_instance
+    # initialize class characters that has the colors to play
+    def initialize
+        @ins_characters = Characters.new
+        @user_combination = user_combination
+        
     end
 
     def start_user_game(state)
-        handler_colors
+        if state
+            
+            handler_validations
+            
+        end
+    end
+    # instance of the array taht will be the secrect combination to the user to figure out
+    def setting_characters
+        list_to_play = @ins_characters.return_list_to_play(1)
+        # puts list_to_play 
+        list_to_play
     end
 
-    def handler_colors
-        state_validation = handler_validations
-        # si no pasa la validacion del input se encicla hasta que el usuario inserte correctamente
-        unless state_validation
-        counter= 0
-            while counter<1
-                list_colors= initial_colors
-                joined_list=list_colors.join(", ")
-                puts "Escribiste incorrectamente las opciones, recuerda que solo tienes disponibles los siguientes colores!".colorize(:red)
-                puts "#{joined_list}".colorize(:red)
-                state_validation = handler_validations
-                if state_validation
-                    counter=1
-                    puts "Opciones validas! Hurra!".colorize(:green)
-                    true
-                    
-                end
-            end
-        else true    
-       end
+    # create a new array where it receives the user combination that want to play in any turn
+    def user_combination
+        array_user = Array.new(4)
+        array_users_mapped = array_user.map.with_index do |_, index|
+        puts "Ingrese un valor para la posición #{index}:"
+        input = gets.chomp
+        input_return = input.delete(" ").downcase
+        input_return
+        end
+        # puts array_users_mapped.inspect
+        array_users_mapped
+     
     end
-
-    def asking_colors
-        puts "\nTendras que digitar uno por uno los colores a adivinar!".colorize(:black)
-        puts "Escribe la combinacion a acertar por favor".colorize(:magenta)
-    end
-    # manejador de validaciones del usuario
+  
+    # validacion del input del usuario
     def handler_validations
-        asking_colors
-        color1 = gets.chomp.downcase.delete(" ")
-        color2 = gets.chomp.downcase.delete(" ")
-        color3 = gets.chomp.downcase.delete(" ")
-        color4 = gets.chomp.downcase.delete(" ")
-        array = Array.new
-        array.push(color1,color2,color3, color4)
-        validate_color_position(array)
-        validation1= validate_user_input(color1,color2,color3,color4)
-        validation1
-    end
-    # alidacion del input del usuario
-    def validate_user_input(c1,c2,c3,c4)
-        # inicializo la lista de colores elegida aleatoriamente
-        list_colors_selected = select_random_list
-        puts "#Lista de colores elegidos: #{list_colors_selected}"
-        # en caso de insertar un valor vacio o escribir mal el color o insertar un caracter random no pasaria la validacion
-        if ((c1 != "") && (c2!= "") && (c3 != "") && (c4 != "")) && ((list_colors_selected.include?(c1)) && (list_colors_selected.include?(c2)) && (list_colors_selected.include?(c3)) && (list_colors_selected.include?(c4)))
-            true             
-        else false    
+        turnos=2
+        # --------------------------------------------------
+        flag=true
+
+        while turnos>0
+            
+            # instancio la lista de colores elegida aleatoriamente
+        array_to_compare = setting_characters
+        # instancio la lista que recibo del usuario
+        puts "Combinacion:: #{array_to_compare}".green
+        array_input_user = user_combination
+        # first validation that the user input is ok! What he wrote is correctly the same as the options for him to choose
+        validated_array= array_input_user.map.with_index do |element,index|
+
+            if array_to_compare.include?(element)
+                true
+            else false    
+            end
+        end   
+        puts validated_array
+        if validated_array.include?(false)
+            flag= false
+            flag
+        else flag
+        end
+        puts "Estado de la madre::#{flag}"
+        
+        # second validation w/ position. 
+        aciertos = []
+        array_input_user.each_with_index do |element, index|
+          if element == array_to_compare[index]
+            aciertos << index
+          end
+        end
+        
+        if aciertos.empty?
+          puts "No acertaste ninguna combinacion, mejor suerte en el siguiente turno!."
+        else
+          aciertos_texto = aciertos.map { |index| "posición #{index + 1}" }.join(" y ")
+          puts "El usuario acertó la #{aciertos_texto} de la combinación a adivinar en el array_to_compare."
+        end
+
+        puts aciertos.length
+
+        if (flag) && (aciertos.length === array_to_compare.length)
+            puts "You win!"
+        else  turnos-=1
+        end
+
+        # the users need to pass both validation to win else it continue till the last turn o till the win
+        
+
         end
         
     end
     
-    # metodo el cual tomo en un array los input del usuario para comenzar a validar la posicion de los colores
-    def validate_color_position(array)
-     
-        
-        
-    end
-
-    def select_random_list
-        colors_array= initial_colors
-        rand = colors_array.sample(4)
-        rand
-    end
-
+  
     
     
 end
